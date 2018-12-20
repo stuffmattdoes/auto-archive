@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "next build ./src",
-    "dev": "node ./src/server.js",
+    "dev": "nodemon ./src/server-app-auth.js",
     "start": "NODE_ENV=production node ./src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.18.0",
     "next": "^7.0.2",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
@@ -20,6 +21,7 @@
   },
   "devDependencies": {
     "@zeit/next-sass": "^1.0.1",
-    "node-sass": "^4.11.0"
+    "node-sass": "^4.11.0",
+    "nodemon": "^1.18.9"
   }
 }
