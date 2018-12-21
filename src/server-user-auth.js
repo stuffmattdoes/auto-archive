@@ -56,19 +56,18 @@ app.prepare().then(() => {
             const { query } = parse(req.url);
             const { oauth_token, oauth_verifier } = qs.parse(query);
 
-            console.log(req.method);
 
             // STEP 3
             // exchange session-based request token for a user-based access token
-
             const options = {
-                url: 'https://api.twitter.com/oauth/access_token',
+                url: 'https://api.twitter.com/oauth/access_token?oauth_verifier',
                 method: 'POST',
                 oauth: {
                     consumer_key: consumer_key,      // Was added in previous step
-                    oauth_token: oauth_token,        // Was added in previous step
+                    token: oauth_token,        // Was added in previous step
                     oauth_verifier: oauth_verifier
-                }
+                },
+                form: { oauth_verifier: oauth_verifier }
             }
 
             request(options, function(err, response, body) {
@@ -78,8 +77,9 @@ app.prepare().then(() => {
                 }
 
                 const data = qs.parse(body);
-                console.log(data);
                 const { oauth_token, oauth_token_secret } = data;
+
+                console.log(data);
 
                 res.writeHead(302, { Location: '/' });
                 res.end();
