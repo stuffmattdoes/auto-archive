@@ -56,12 +56,13 @@ app.prepare().then(() => {
             const { query } = parse(req.url);
             const { oauth_token, oauth_verifier } = qs.parse(query);
 
+            console.log(req.method);
 
             // STEP 3
             // exchange session-based request token for a user-based access token
 
             const options = {
-                url: `https://api.twitter.com/oauth/access_token?oauth_verifier=${oauth_verifier}`,
+                url: 'https://api.twitter.com/oauth/access_token',
                 method: 'POST',
                 oauth: {
                     consumer_key: consumer_key,      // Was added in previous step
