@@ -1,5 +1,5 @@
 # Auto Archive
-**Auto Archive** is a simple online tool that allows [Twitter](https://twitter.com/) users to backup their tweets on [Gab](https://gab.com/) in one fell swoop automatically. This is aimed to preserve user's most important weapon - their ideas and voice - for the inevitable day that the social media giants begin to swing the ban hammer upon those accused of *wrongthink*.
+**Auto Archive** is a simple online tool that allows [Twitter](https://twitter.com/) users to backup their tweets on [Gab](https://gab.com/) in one fell swoop automatically. This is aimed to preserve user's most important weapon - their voice - against authority-seeking social media moderators intent on swinging the banhammer against *wrongthinkers*.
 
 ## Prerequisite Software
 You'll need the following software installed on your computer in order to successfully run the code in this repo.
