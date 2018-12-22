@@ -1,11 +1,13 @@
 // This file doesn't go through babel or webpack transformation.
 // Make sure the syntax and sources this file requires are compatible with the current node version you are running
 // See https://github.com/zeit/next.js/issues/1245 for discussions on Universal Webpack or universal Babel
+const fs = require('fs');
 const { createServer } = require('http');
-const { parse } = require('url');
 const next = require('next');
-const request = require('request');
 const qs = require('querystring');
+const request = require('request');
+const { parse } = require('url');
+
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev, dir: 'src' });
 const handle = app.getRequestHandler();
@@ -110,6 +112,12 @@ app.prepare().then(() => {
             // Request tweets
             request(options, function(err, response, body) {
                 if (err) throw err;
+
+                // Write to seed-data for the heck of it
+                fs.writeFile('./src/seed-data.json', JSON.stringify(JSON.parse(body), null, 4), null, err => {
+                    if (err) throw err;
+                    console.log('Saved seed data!');
+                });
                 
                 res.setHeader('Content-Type', 'application/json');
                 res.end(body);

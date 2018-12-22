@@ -1,6 +1,6 @@
 // Libs
-import classnames from 'classnames';
 import axios from 'axios';
+import classnames from 'classnames';
 import React from 'react';
 
 // Components
