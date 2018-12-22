@@ -1,7 +1,6 @@
 // Libs
+import classnames from 'classnames';
 import axios from 'axios';
-import Head from 'next/head';
-// import Router from 'next/router';
 import React from 'react';
 
 // Components
@@ -25,7 +24,7 @@ export default class extends React.Component {
         this.onSelectTweet = this.onSelectTweet.bind(this);
         this.pluralize = this.pluralize.bind(this);
         this.renderTweet = this.renderTweet.bind(this);
-        this.toggleAll = this.toggleAll.bind(this);
+        this.filter = this.filter.bind(this);
     }
 
     static async getInitialProps({ asPath, err, jsonPageRes, pathname, req, res, query }) {
@@ -44,7 +43,7 @@ export default class extends React.Component {
 
         this.setState({ isFetching: true });
 
-        axios.get(`/api/tweets?&screen_name=${screen_name}&count=10&tweet_mode=extended`, options)
+        axios.get(`/api/tweets?&screen_name=${screen_name}&count=25&tweet_mode=extended`, options)
             .then(res => {
                 const user = {
                     description: res.data[0].user.description,
@@ -91,7 +90,7 @@ export default class extends React.Component {
         const months = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];
         const dateStr = `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
         const { selected } = this.state;
-        const checked = selected.find(tweetId => tweetId === tweet.id) ? true : false;
+        const isSelected = selected.find(tweetId => tweetId === tweet.id) ? true : false;
         const userMatches = tweet.full_text.split(/(@[a-zA-Z0-9_]+)/);
 
         for (let i = 1; i < userMatches.length; i += 2) {
@@ -99,10 +98,13 @@ export default class extends React.Component {
         }
 
         return (
-            <li className='tweet' key={tweet.id}>
+            <li className={classnames([
+                'tweet',
+                { 'tweet--selected': isSelected }
+            ])} key={tweet.id}>
                 <span>
                     <input
-                        checked={checked}
+                        checked={isSelected}
                         className='checkbox'
                         onChange={this.onSelectTweet}
                         type='checkbox'
@@ -117,14 +119,27 @@ export default class extends React.Component {
         );
     }
 
-    toggleAll(event) {
+    filter(event) {
         const { selected, tweets } = this.state;
         let nextSelected = selected;
 
-        if (event.target.checked) {
-            nextSelected = tweets.map(tweet => tweet.id);
-        } else {
-            nextSelected = [];
+        switch (event.target.id) {
+            case 'toggle-all': {
+                if (event.target.checked) {
+                    nextSelected = tweets.map(tweet => tweet.id);
+                } else {
+                    nextSelected = [];
+                }
+                break;
+            }
+            case 'toggle-retweets': {
+                console.log('togle-retweets', event.target.value);
+                break;
+            }
+            case 'toggle-replies': {
+                console.log('togle-replies', event.target.value);
+                break;
+            }
         }
 
         this.setState({ selected: nextSelected });
@@ -149,7 +164,11 @@ export default class extends React.Component {
                                 <Text.Body2>{user.tweetsCount} total tweets</Text.Body2>
                             </div>
                         </div>
-                        <input className='checkbox' defaultChecked={true} id='select-all' onChange={this.toggleAll} type='checkbox' /><label htmlFor='select-all'>Select all</label>
+                        <div className='filter'>
+                            <input className='checkbox' defaultChecked={true} id='toggle-all' onChange={this.filter} type='checkbox' /><label htmlFor='toggle-all'>Select all</label>
+                            <input className='checkbox' defaultChecked={true} id='toggle-retweets' onChange={this.filter} type='checkbox' /><label htmlFor='toggle-retweets'>Include retweets</label>
+                            <input className='checkbox' defaultChecked={true} id='toggle-replies' onChange={this.filter} type='checkbox' /><label htmlFor='toggle-replies'>Include replies</label>
+                        </div>
                         <ul className='list list--scroll'>
                             {tweets.map(this.renderTweet)}
                         </ul>

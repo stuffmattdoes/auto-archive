@@ -18,6 +18,18 @@ strong {
     max-width: 960px;
 }
 
+.filter {
+    display: flex;
+
+    .checkbox {
+        margin-right: 8px;
+    }
+
+    label {
+        margin-right: 24px;
+    }
+}
+
 .list {
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -48,10 +60,16 @@ strong {
     border-bottom: 1px solid #ccc;
     display: flex;
     margin: 24px 16px 8px;
+    opacity: 0.35;
     padding: 8px 16px;
+    transition: 150ms;
 
     &:last-of-type {
         border: none;
+    }
+
+    &--selected {
+        opacity: 1;
     }
 
     .checkbox {
