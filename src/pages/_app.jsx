@@ -24,7 +24,7 @@ export default class extends App {
                 <title>Auto Archive</title>
             </Head>
             <div className='container'>
-                <Link href='/'><a>Hhome</a></Link>
+                <Link href='/'><a>Home</a></Link>
                 <Component {...pageProps} />
             </div>
         </Container>

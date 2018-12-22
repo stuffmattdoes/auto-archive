@@ -14,6 +14,8 @@ const callback_url = 'oauth/authorize/callback';
 const consumer_key = '0ieOQlmM3GDeNKHaVxFaikZpp';
 const consumer_secret = 'J4mZ86dQCYW5tAIVuaFvl8XzH2yDNke72K4z8fjhzjzKAiXDjz';
 
+// const seedData = require('./seed-data.json');
+
 app.prepare().then(() => {
     createServer((req, res) => {
         // Be sure to pass `true` as the second argument to `url.parse`.
@@ -21,8 +23,8 @@ app.prepare().then(() => {
         const parsedUrl = parse(req.url, true);
         const { pathname, query } = parsedUrl;
 
+        // Twitter Auth docs:
         // https://developer.twitter.com/en/docs/basics/authentication/overview/3-legged-oauth
-
         if (pathname === '/oauth/authorize') {
             // STEP 1
             // Make POST request with app creds to get a request token
@@ -73,19 +75,18 @@ app.prepare().then(() => {
 
                 const data = qs.parse(body);
                 const params = Object.keys(data).reduce((acc, val, i) => {
-                    i > 0 ? acc += '&' : null;
-                    acc += `${val}=${data[val]}`;
+                    if (i > 0) {
+                        acc += '&';
+                    }
+
+                    acc += `${val}=${data[val]}&`;
+                    return acc;
                 }, '');
 
                 res.writeHead(302, { Location: `/tweets?${params}` });
                 res.end();
             });
         } else if (pathname === '/api/tweets') {
-            // oauth_token=140301959-GXn7mU02q3UzmSebIufpiDlN3M1r1AfBDyILwl1S
-            // oauth_token_secret=r65x7BZzg4YjueOKWurMWB5odonfh2gzDsvYf1uwFcjOo
-            // user_id=140301959
-            // screen_name=stuffmattdoesnt
-
             const oauth = req.headers.authorization
                 .replace('OAuth ', '')
                 .split(',')
@@ -101,15 +102,15 @@ app.prepare().then(() => {
                 oauth: {
                     consumer_key: consumer_key,
                     consumer_secret: consumer_secret,
-                    token: oauth.oauth_token,    // Should be coming from client
-                    token_secret: oauth.oauth_token_secret   // Should be coming from client
+                    token: oauth.oauth_token,
+                    token_secret: oauth.oauth_token_secret
                 }
             }
 
             // Request tweets
             request(options, function(err, response, body) {
                 if (err) throw err;
-
+                
                 res.setHeader('Content-Type', 'application/json');
                 res.end(body);
             });
