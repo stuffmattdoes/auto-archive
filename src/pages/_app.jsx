@@ -1,5 +1,6 @@
 import App, { Container } from 'next/app';
 import Head from 'next/head';
+import Link from 'next/link'
 import React from 'react';
 
 export default class extends App {
@@ -22,9 +23,10 @@ export default class extends App {
             <Head>
                 <title>Auto Archive</title>
             </Head>
-            <main className='app'>
+            <div className='container'>
+                <Link href='/'><a>Hhome</a></Link>
                 <Component {...pageProps} />
-            </main>
+            </div>
         </Container>
     }
 }

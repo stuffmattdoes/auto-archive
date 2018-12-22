@@ -10,8 +10,9 @@ const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev, dir: 'src' });
 const handle = app.getRequestHandler();
 
-const consumer_key = 'fjv1VccGnXStB0mLP71iTe2Mr';
-const consumer_secret = 'o1gqF23uY2j837UC9Bt8vU7OZvmfS8Z9HpQyATdOQHlCp3Rnks';
+const callback_url = 'oauth/authorize/callback';
+const consumer_key = '0ieOQlmM3GDeNKHaVxFaikZpp';
+const consumer_secret = 'J4mZ86dQCYW5tAIVuaFvl8XzH2yDNke72K4z8fjhzjzKAiXDjz';
 
 app.prepare().then(() => {
     createServer((req, res) => {
@@ -24,33 +25,31 @@ app.prepare().then(() => {
 
         if (pathname === '/oauth/authorize') {
             // STEP 1
-            // make your POST https://api.twitter.com/oauth/authenticate?oauth_callback=<yourcallback>
+            // Make POST request with app creds to get a request token
 
             const options = {
                 url: 'https://api.twitter.com/oauth/request_token',
                 method: 'POST',
                 oauth: {
-                    callback: encodeURI('http://localhost:3000/callback'),
+                    callback: encodeURI(`http://localhost:3000/${callback_url}`),
                     consumer_key: consumer_key,
                     consumer_secret: consumer_secret
                 }
             }
             
             request(options, function(err, response, body) {
-                if (err) {
-                    // handle error
-                    console.error('Error', err);
-                }
+                if (err) throw err;
 
                 const data = qs.parse(body);
                 const { oauth_callback_confirmed, oauth_token, oauth_token_secret } = data;
+
 
                 // STEP 2.1
                 // Redirect user to sign-in, which will then redirect to application callback URL
                 res.writeHead(302, { Location: `https://api.twitter.com/oauth/authorize?oauth_token=${oauth_token}` });
                 res.end();
             });
-        } else if (pathname === '/callback') {
+        } else if (pathname === `/${callback_url}`) {
             // STEP 2.2
             // Obtain query params for oauth token
             const { query } = parse(req.url);
@@ -60,29 +59,52 @@ app.prepare().then(() => {
             // STEP 3
             // exchange session-based request token for a user-based access token
             const options = {
-                url: 'https://api.twitter.com/oauth/access_token?oauth_verifier',
+                url: 'https://api.twitter.com/oauth/access_token',
                 method: 'POST',
                 oauth: {
-                    consumer_key: consumer_key,      // Was added in previous step
-                    token: oauth_token,        // Was added in previous step
-                    oauth_verifier: oauth_verifier
+                    consumer_key: consumer_key,
+                    token: oauth_token,
                 },
                 form: { oauth_verifier: oauth_verifier }
             }
 
             request(options, function(err, response, body) {
-                if (err) {
-                    // handle error
-                    console.error('Error', err);
-                }
+                if (err) throw err;
 
                 const data = qs.parse(body);
-                const { oauth_token, oauth_token_secret } = data;
+                const params = Object.keys(data).reduce((acc, val, i) => {
+                    i > 0 ? acc += '&' : null;
+                    acc += `${val}=${data[val]}`;
+                }, '');
 
-                console.log(data);
-
-                res.writeHead(302, { Location: '/' });
+                res.writeHead(302, { Location: `/tweets?${params}` });
                 res.end();
+            });
+        } else if (pathname === '/api/tweets') {
+            // oauth_token=140301959-GXn7mU02q3UzmSebIufpiDlN3M1r1AfBDyILwl1S
+            // oauth_token_secret=r65x7BZzg4YjueOKWurMWB5odonfh2gzDsvYf1uwFcjOo
+            // user_id=140301959
+            // screen_name=stuffmattdoesnt
+            
+            console.log(parse(req.url).query);
+            
+            const options = {
+                url: `https://api.twitter.com/1.1/statuses/user_timeline.json?${parse(req.url).query}`,
+                method: 'GET',
+                oauth: {
+                    consumer_key: consumer_key,
+                    consumer_secret: consumer_secret,
+                    token: '140301959-GXn7mU02q3UzmSebIufpiDlN3M1r1AfBDyILwl1S',
+                    token_secret: 'r65x7BZzg4YjueOKWurMWB5odonfh2gzDsvYf1uwFcjOo'
+                }
+            }
+
+            // Request tweets
+            request(options, function(err, response, body) {
+                if (err) throw err;
+
+                res.setHeader('Content-Type', 'application/json');
+                res.end(body);
             });
         } else {
             handle(req, res, parsedUrl);
