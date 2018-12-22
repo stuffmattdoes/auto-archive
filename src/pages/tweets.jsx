@@ -26,7 +26,7 @@ export default class extends React.Component {
             }
         };
         
-        axios.get(`/api/tweets?token=${oauth_token}&token_secret=${oauth_token_secret}&screen_name=${screen_name}&count=10`, options)
+        axios.get(`/api/tweets?&screen_name=${screen_name}&count=10`, options)
             .then(res => console.log('Success!', res.data))
             .catch(err => console.log('Error:', err.message));
     }

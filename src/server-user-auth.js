@@ -85,8 +85,15 @@ app.prepare().then(() => {
             // oauth_token_secret=r65x7BZzg4YjueOKWurMWB5odonfh2gzDsvYf1uwFcjOo
             // user_id=140301959
             // screen_name=stuffmattdoesnt
-            
-            console.log(parse(req.url).query);
+
+            const oauth = req.headers.authorization
+                .replace('OAuth ', '')
+                .split(',')
+                .reduce((acc, val) => {
+                    const keyVal = val.split('=');
+                    acc[keyVal[0]] = keyVal[1];
+                    return acc;
+                }, {});
             
             const options = {
                 url: `https://api.twitter.com/1.1/statuses/user_timeline.json?${parse(req.url).query}`,
@@ -94,8 +101,8 @@ app.prepare().then(() => {
                 oauth: {
                     consumer_key: consumer_key,
                     consumer_secret: consumer_secret,
-                    token: '140301959-GXn7mU02q3UzmSebIufpiDlN3M1r1AfBDyILwl1S',
-                    token_secret: 'r65x7BZzg4YjueOKWurMWB5odonfh2gzDsvYf1uwFcjOo'
+                    token: oauth.oauth_token,    // Should be coming from client
+                    token_secret: oauth.oauth_token_secret   // Should be coming from client
                 }
             }
 
