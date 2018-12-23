@@ -41,7 +41,7 @@ app.prepare().then(() => {
                 }
             }
             
-            request(options, function(err, response, body) {
+            request(options, (err, response, body) =>{
                 if (err) throw err;
 
                 const data = qs.parse(body);
@@ -72,20 +72,24 @@ app.prepare().then(() => {
                 form: { oauth_verifier: oauth_verifier }
             }
 
-            request(options, function(err, response, body) {
+            request(options, (err, response, body) => {
                 if (err) throw err;
 
                 const data = qs.parse(body);
-                const params = Object.keys(data).reduce((acc, val, i) => {
-                    if (i > 0) {
-                        acc += '&';
-                    }
+                console.log('DATA', data);
 
+                const params = Object.keys(data).reduce((acc, val, i) => {
+                    i > 0 ? acc += '&' : null;
                     acc += `${val}=${data[val]}&`;
+                    
                     return acc;
                 }, '');
 
-                res.writeHead(302, { Location: `/tweets?${params}` });
+                res.writeHead(302, {
+                    Authorization: `OAuth oauth_token=${data.oauth_token},oauth_token_secret=${data.oauth_token_secret}`,
+                    // Location: `/tweets?${data.screen_name}`,
+                    Location: `/tweets?${params}`
+                });
                 res.end();
             });
         } else if (pathname === '/api/tweets') {
@@ -97,9 +101,10 @@ app.prepare().then(() => {
                     acc[keyVal[0]] = keyVal[1];
                     return acc;
                 }, {});
+            const params = parse(req.url).query;
             
             const options = {
-                url: `https://api.twitter.com/1.1/statuses/user_timeline.json?${parse(req.url).query}`,
+                url: `https://api.twitter.com/1.1/statuses/user_timeline.json?${params}`,
                 method: 'GET',
                 oauth: {
                     consumer_key: consumer_key,
@@ -110,18 +115,23 @@ app.prepare().then(() => {
             }
 
             // Request tweets
-            request(options, function(err, response, body) {
+            request(options, (err, response, body) => {
                 if (err) throw err;
 
+                // const user_name = qs.parse(params).screen_name;
+
                 // Write to seed-data for the heck of it
-                fs.writeFile('./src/seed-data.json', JSON.stringify(JSON.parse(body), null, 4), null, err => {
-                    if (err) throw err;
-                    console.log('Saved seed data!');
-                });
-                
-                res.setHeader('Content-Type', 'application/json');
-                res.end(body);
+                // fs.writeFile(`./tmp/${user_name}_tweets.json`, JSON.stringify(JSON.parse(body), null, 4), null, err => {
+                //     if (err) throw err;
+                //     console.log('Saved seed data!');    
+                    
+                    res.setHeader('Content-Type', 'application/json');
+                    res.end(body);
+                // });
             });
+        } else if (pathname === '/tweets/download') {
+            console.log('download');
+            res.end();
         } else {
             handle(req, res, parsedUrl);
         }
