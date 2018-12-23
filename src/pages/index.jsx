@@ -1,7 +1,6 @@
 // Libs
-import axios from 'axios';
-import Head from 'next/head';
 import React from 'react';
+import Router from 'next/router'
 
 // Components
 import Button from '../components/button';
@@ -11,6 +10,15 @@ import Text from '../components/text';
 import './index.scss';
 
 export default class extends React.Component {
+    componentDidMount() {
+        const oauth_token = localStorage.getItem('access_token');
+        const oauth_token_secret = localStorage.getItem('access_token_secret');
+
+        // if (oauth_token && oauth_token_secret) {
+        //     Router.push('/tweets');
+        // }
+    }
+
     render() {
         return (
             <>

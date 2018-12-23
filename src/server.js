@@ -46,7 +46,7 @@ app.prepare().then(() => {
 
                 const data = qs.parse(body);
                 const { oauth_callback_confirmed, oauth_token, oauth_token_secret } = data;
-
+                console.log('Step 1:', data.oauth_token);
 
                 // STEP 2.1
                 // Redirect user to sign-in, which will then redirect to application callback URL
@@ -58,7 +58,7 @@ app.prepare().then(() => {
             // Obtain query params for oauth token
             const { query } = parse(req.url);
             const { oauth_token, oauth_verifier } = qs.parse(query);
-
+            console.log('Step 2.2:', oauth_token);
 
             // STEP 3
             // exchange session-based request token for a user-based access token
@@ -76,8 +76,7 @@ app.prepare().then(() => {
                 if (err) throw err;
 
                 const data = qs.parse(body);
-                console.log('DATA', data);
-
+                console.log('Step 3:', data.oauth_token);
                 const params = Object.keys(data).reduce((acc, val, i) => {
                     i > 0 ? acc += '&' : null;
                     acc += `${val}=${data[val]}&`;

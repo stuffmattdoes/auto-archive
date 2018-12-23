@@ -22,7 +22,6 @@ export default class extends React.Component {
         }
 
         this.onSelectTweet = this.onSelectTweet.bind(this);
-        this.pluralize = this.pluralize.bind(this);
         this.renderTweet = this.renderTweet.bind(this);
         this.filter = this.filter.bind(this);
     }
@@ -40,6 +39,9 @@ export default class extends React.Component {
                 Authorization: `OAuth oauth_token=${oauth_token},oauth_token_secret=${oauth_token_secret}`
             }
         };
+
+        localStorage.setItem('access_token', oauth_token);
+        localStorage.setItem('access_token_secret', oauth_token_secret);
 
         this.setState({ isFetching: true });
 
@@ -79,10 +81,6 @@ export default class extends React.Component {
         }
 
         this.setState({ selected: nextSelected });
-    }
-
-    pluralize(word, plural) {
-        return plural ? word + 's' : word;
     }
 
     renderTweet(tweet, i) {
@@ -173,7 +171,7 @@ export default class extends React.Component {
                             {tweets.map(this.renderTweet)}
                         </ul>
                         <Text.Body1>Download {selected.length} of {tweets.length} most recent tweets</Text.Body1>
-                        <Button.Link disabled={selected.length === 0} href='/oauth/authorize'>Upload to Gab</Button.Link>
+                        <Button.Link disabled={selected.length === 0} href='#'>Download (.csv)</Button.Link>
                     </>
                 }
             </>
