@@ -121,24 +121,24 @@ export default class extends React.Component {
 
     filter(event) {
         const { selected, tweets } = this.state;
-        let nextSelected = selected;
+        const { checked, id } = event.target;
+        let nextSelected = selected.slice();
 
-        switch (event.target.id) {
-            case 'toggle-all': {
-                if (event.target.checked) {
-                    nextSelected = tweets.map(tweet => tweet.id);
-                } else {
-                    nextSelected = [];
-                }
-                break;
+        if (id === 'toggle-all') {
+            if (checked) {
+                nextSelected = tweets.map(tweet => tweet.id);
+            } else {
+                nextSelected = [];
             }
-            case 'toggle-retweets': {
-                console.log('togle-retweets', event.target.value);
-                break;
-            }
-            case 'toggle-replies': {
-                console.log('togle-replies', event.target.value);
-                break;
+        } else if (id === 'toggle-retweets' || id === 'toggle-replies') {
+            const propToFilter = id === 'toggle-retweets' ? 'retweeted' : 'in_reply_to_status_id';
+            const idsToFilter = tweets.filter(tweet => tweet[propToFilter]).map(tweet => tweet.id);
+
+            if (event.target.checked) {
+                let toAdd = idsToFilter.filter(tweetId => !nextSelected.includes(tweetId));
+                nextSelected = nextSelected.concat(toAdd);
+            } else {
+                nextSelected = nextSelected.filter(tweetId => !idsToFilter.includes(tweetId));
             }
         }
 
@@ -147,7 +147,7 @@ export default class extends React.Component {
 
     render() {
         const { oauth_token, oauth_token_secret, user_id, screen_name } = this.props.query;
-        const { isFetching, selected, tweets, user } = this.state;
+        const { isFetching, selected, selectAll, selectReplies, selectRetweets, tweets, user } = this.state;
 
         return (
             <>
