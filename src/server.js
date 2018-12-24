@@ -85,7 +85,7 @@ app.prepare().then(() => {
                 }, '');
 
                 res.writeHead(302, {
-                    Authorization: `OAuth oauth_token=${data.oauth_token},oauth_token_secret=${data.oauth_token_secret}`,
+                    Authorization: `OAuth oauth_token="${data.oauth_token}",oauth_token_secret="${data.oauth_token_secret}"`,
                     // Location: `/tweets?${data.screen_name}`,
                     Location: `/tweets?${params}`
                 });
@@ -131,6 +131,29 @@ app.prepare().then(() => {
         } else if (pathname === '/tweets/download') {
             console.log('download');
             res.end();
+        } else if (pathname === '/api/user') {
+            const { oauth_token, oauth_token_secret } = qs.parse(parse(req.url).query);
+            // const data = qs.parse(parse(req.url).query);
+            // console.log(req.headers.authorization);
+
+            const options = {
+                url: 'https://api.twitter.com/1.1/account/verify_credentials.json',
+                method: 'GET',
+                oauth: {
+                    consumer_key: consumer_key,
+                    consumer_secret: consumer_secret,
+                    token: oauth_token,
+                    token_secret: oauth_token_secret
+                }
+            }
+
+            // Request tweets
+            request(options, (err, response, body) => {
+                if (err) throw err;
+
+                res.setHeader('Content-Type', 'application/json');
+                res.end(body);
+            });
         } else {
             handle(req, res, parsedUrl);
         }
