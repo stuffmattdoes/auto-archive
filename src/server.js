@@ -46,7 +46,7 @@ app.prepare().then(() => {
 
                 const data = qs.parse(body);
                 const { oauth_callback_confirmed, oauth_token, oauth_token_secret } = data;
-                console.log('Step 1:', data.oauth_token);
+                // console.log('Step 1:', data.oauth_token);
 
                 // STEP 2.1
                 // Redirect user to sign-in, which will then redirect to application callback URL
@@ -58,7 +58,7 @@ app.prepare().then(() => {
             // Obtain query params for oauth token
             const { query } = parse(req.url);
             const { oauth_token, oauth_verifier } = qs.parse(query);
-            console.log('Step 2.2:', oauth_token);
+            // console.log('Step 2.2:', oauth_token);
 
             // STEP 3
             // exchange session-based request token for a user-based access token
@@ -76,7 +76,7 @@ app.prepare().then(() => {
                 if (err) throw err;
 
                 const data = qs.parse(body);
-                console.log('Step 3:', data.oauth_token);
+                // console.log('Step 3:', data.oauth_token);
                 const params = Object.keys(data).reduce((acc, val, i) => {
                     i > 0 ? acc += '&' : null;
                     acc += `${val}=${data[val]}&`;
@@ -92,14 +92,7 @@ app.prepare().then(() => {
                 res.end();
             });
         } else if (pathname === '/api/tweets') {
-            const oauth = req.headers.authorization
-                .replace('OAuth ', '')
-                .split(',')
-                .reduce((acc, val) => {
-                    const keyVal = val.split('=');
-                    acc[keyVal[0]] = keyVal[1];
-                    return acc;
-                }, {});
+            const oauth = parseOauth(req.headers.authorization);
             const params = parse(req.url).query;
             
             const options = {
@@ -117,25 +110,22 @@ app.prepare().then(() => {
             request(options, (err, response, body) => {
                 if (err) throw err;
 
-                // const user_name = qs.parse(params).screen_name;
+                const { screen_name } = qs.parse(params);
 
                 // Write to seed-data for the heck of it
-                // fs.writeFile(`./tmp/${user_name}_tweets.json`, JSON.stringify(JSON.parse(body), null, 4), null, err => {
-                //     if (err) throw err;
-                //     console.log('Saved seed data!');    
-                    
+                fs.writeFile(`./tmp/${screen_name}_tweets.json`, JSON.stringify(JSON.parse(body), null, 4), null, err => {
+                    if (err) throw err;
+                    console.log('Saved seed data!');
                     res.setHeader('Content-Type', 'application/json');
                     res.end(body);
-                // });
+                });
             });
         } else if (pathname === '/tweets/download') {
             console.log('download');
             res.end();
         } else if (pathname === '/api/user') {
-            const { oauth_token, oauth_token_secret } = qs.parse(parse(req.url).query);
-            // const data = qs.parse(parse(req.url).query);
-            // console.log(req.headers.authorization);
-
+            // const { oauth_token, oauth_token_secret } = qs.parse(parse(req.url).query);
+            const { oauth_token, oauth_token_secret } = parseOauth(req.headers.authorization);
             const options = {
                 url: 'https://api.twitter.com/1.1/account/verify_credentials.json',
                 method: 'GET',
@@ -146,8 +136,8 @@ app.prepare().then(() => {
                     token_secret: oauth_token_secret
                 }
             }
-
-            // Request tweets
+            
+            // Request user info
             request(options, (err, response, body) => {
                 if (err) throw err;
 
@@ -162,3 +152,15 @@ app.prepare().then(() => {
         console.log('> Ready on http://localhost:3000');
     });
 });
+
+function parseOauth(authHeader) {
+    return authHeader
+        .replace(/OAuth\s+/, '')
+        .replace(/"/g, '')
+        .split(',')
+        .reduce((acc, val) => {
+            const keyVal = val.split('=');
+            acc[keyVal[0]] = keyVal[1];
+            return acc;
+        }, {});
+}

@@ -20,12 +20,14 @@ export default class extends React.Component {
                 headers: {
                     Authorization: `OAuth oauth_token="${oauth_token}",oauth_token_secret="${oauth_token_secret}"`
                 }
-            };
+            }
 
-            axios.get(`/api/user?oauth_token=${oauth_token}&oauth_token_secret=${oauth_token_secret}`, options)
-                .then(console.log)
+            axios.get('/api/user', options)
+                .then(res => {
+                    const { screen_name } = res.data;
+                    Router.push(`/tweets?oauth_token=${oauth_token}&oauth_token_secret=${oauth_token_secret}&screen_name=${screen_name}`);
+                })
                 .catch(console.log);
-            // Router.push('/tweets');
         }
     }
 
