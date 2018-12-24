@@ -79,7 +79,7 @@ app.prepare().then(() => {
                 // console.log('Step 3:', data.oauth_token);
                 const params = Object.keys(data).reduce((acc, val, i) => {
                     i > 0 ? acc += '&' : null;
-                    acc += `${val}=${data[val]}&`;
+                    acc += `${val}=${data[val]}`;
                     
                     return acc;
                 }, '');

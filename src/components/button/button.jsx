@@ -2,17 +2,19 @@ import classnames from 'classnames';
 import React from 'react';
 import './button.scss';
 
-const Button = ({ children, disabled }) => (
+const Button = ({ children, className, disabled }) => (
     <button className={cclassnames([
         'button',
-        { 'button--disabled': disabled }
+        { 'button--disabled': disabled },
+        className
     ])} disabled={disabled}>{children}</button>
 );
 
-Button.Link = ({ children, disabled, href }) => (
+Button.Link = ({ children, className, disabled, href }) => (
     <a className={classnames([
         'button',
-        { 'button--disabled': disabled }
+        { 'button--disabled': disabled },
+        className
     ])} href={disabled ? null : href}>{children}</a>
 );
 

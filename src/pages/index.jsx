@@ -1,14 +1,10 @@
 // Libs
 import axios from 'axios';
 import React from 'react';
-import Router from 'next/router'
+import Router from 'next/router';
 
 // Components
-import Button from '../components/button';
-import Text from '../components/text';
-
-// Styles
-import './index.scss';
+import { Button, Icon, Text } from '../components/';
 
 export default class extends React.Component {
     componentDidMount() {
@@ -25,7 +21,7 @@ export default class extends React.Component {
             axios.get('/api/user', options)
                 .then(res => {
                     const { screen_name } = res.data;
-                    Router.push(`/tweets?oauth_token=${oauth_token}&oauth_token_secret=${oauth_token_secret}&screen_name=${screen_name}`);
+                    // Router.push(`/tweets?oauth_token=${oauth_token}&oauth_token_secret=${oauth_token_secret}&screen_name=${screen_name}`);
                 })
                 .catch(console.log);
         }
@@ -33,11 +29,11 @@ export default class extends React.Component {
 
     render() {
         return (
-            <>
+            <div className='valign--center'>
                 <Text.Heading1>Auto Archive</Text.Heading1>
                 <Text.Body1>Download your Tweets and upload 'em to Gab (automatically).</Text.Body1>
-                <Button.Link href='/oauth/authorize'>Login to Twitter</Button.Link>
-            </>
+                <Button.Link className='icon-text bg-color--twitter-blue' href='/oauth/authorize'><Icon icon='twitter' fill='#fff' width={24} height={24} />Login to Twitter</Button.Link>
+            </div>
         );
     }
 }

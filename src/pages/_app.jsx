@@ -1,7 +1,10 @@
 import App, { Container } from 'next/app';
 import Head from 'next/head';
-import Link from 'next/link'
+// import Link from 'next/link';
 import React from 'react';
+
+// Styles
+import '../styles/index.scss';
 
 export default class extends App {
     // Next.js-specific lifecycle method, called on server, populates as props in component
@@ -24,7 +27,7 @@ export default class extends App {
                 <title>Auto Archive</title>
             </Head>
             <div className='container'>
-                <Link href='/'><a>Home</a></Link>
+                {/* <Link href='/'><a>Home</a></Link> */}
                 <Component {...pageProps} />
             </div>
         </Container>

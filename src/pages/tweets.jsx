@@ -8,9 +8,6 @@ import Button from '../components/button';
 import Loader from '../components/loader';
 import Text from '../components/text';
 
-// Styles
-import './index.scss';
-
 export default class extends React.Component {
     constructor(props) {
         super(props);
@@ -31,8 +28,9 @@ export default class extends React.Component {
 
         return { userAgent, query };
     }
-
+    
     componentDidMount() {
+        console.log('componentDidMount');
         const { oauth_token, oauth_token_secret, user_id, screen_name } = this.props.query;
         const options = {
             headers: {
@@ -150,10 +148,10 @@ export default class extends React.Component {
         return (
             <>
                 { isFetching || tweets.length === 0 ?
-                    <>
+                    <div className='valign--center'>
                         <Text.Body1>Fetching tweets...</Text.Body1>
                         <Loader size='large' />
-                    </>
+                    </div>
                     : <>
                         <div className='profile'>
                             <div className='profile__photo'><img src={user.profilePhoto} /></div>
@@ -171,7 +169,7 @@ export default class extends React.Component {
                             {tweets.map(this.renderTweet)}
                         </ul>
                         <Text.Body1>Download {selected.length} of {tweets.length} most recent tweets</Text.Body1>
-                        <Button.Link disabled={selected.length === 0} href='#'>Download (.csv)</Button.Link>
+                        <Button.Link className='bg-color--twitter-blue' disabled={selected.length === 0} href='#'>Download (.csv)</Button.Link>
                     </>
                 }
             </>
