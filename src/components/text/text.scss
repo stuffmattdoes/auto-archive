@@ -1,43 +1,55 @@
 .text {
     &--body-1 {
-        color: rgba(0, 0, 0, 0.88);
+        color: #263238;
         font-size: 16px;
         line-height: 1.5;
         margin: 0 0 12px;
+        opacity: 0.78;
     }
 
     &--body-2 {
-        color: rgba(0, 0, 0, 0.72);
+        color: #263238;
         font-size: 13px;
         line-height: 1.5;
         margin: 0 0 8px;
+        opacity: 0.74;
     }
 
     &--heading-1 {
-        color: rgba(0, 0, 0, 0.94);
-        font-size: 48px;
+        color: #263238;
+        font-size: 72px;
+        font-weight: bold;
         line-height: 1.5;
         margin: 0 0 24px;
+        opacity: 0.94;
     }
 
     &--heading-2 {
-        color: rgba(0, 0, 0, 0.92);
-        font-size: 32px;
+        color: #263238;
+        font-size: 60px;
+        font-weight: bold;
         line-height: 1.5;
         margin: 0 0 16px;
+        opacity: 0.9;
     }
 
     &--heading-3 {
-        color: rgba(0, 0, 0, 0.90);
-        font-size: 24px;
+        color: #263238;
+        font-size: 48px;
         line-height: 1.5;
         margin: 0 0 12px;
+        opacity: 0.86;
     }
 
     &--heading-4 {
-        color: rgba(0, 0, 0, 0.90);
-        font-size: 18px;
+        color: #263238;
+        font-size: 32px;
         line-height: 1.5;
         margin: 0 0 8px;
+        opacity: 0.82;
     }
+}
+
+strong {
+    font-weight: bold;
 }

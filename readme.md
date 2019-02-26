@@ -11,7 +11,7 @@ First, make sure you've got the **prerequisite software** installed above.
 
 1. `npm install` in console to install dependencies.
 2. `npm run dev` to initiate the local development process.
-3. Visit `localhost:3000` in your browser and dev away!
+3. Visit `localhost:8080` in your browser and dev away!
 
 ## Notable Tools
 This project uses the following frameworks - familiarity with them is necessary:

@@ -1,5 +1,6 @@
 import classnames from 'classnames';
 import React from 'react';
+
 import './button.scss';
 
 const Button = ({ children, className, disabled }) => (

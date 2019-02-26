@@ -12,11 +12,10 @@ const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev, dir: 'src' });
 const handle = app.getRequestHandler();
 
+// API keys
 const callback_url = 'oauth/authorize/callback';
-const consumer_key = '0ieOQlmM3GDeNKHaVxFaikZpp';
-const consumer_secret = 'J4mZ86dQCYW5tAIVuaFvl8XzH2yDNke72K4z8fjhzjzKAiXDjz';
-
-// const seedData = require('./seed-data.json');
+const consumer_key = 'lLqYKm2dwTdfKcUJGkjh5cFoo';
+const consumer_secret = 'cyYRCrDl9ynJLkJP6Hw885ocE8iFSlKdoCvFhUZfo0nEAhmpgl';
 
 app.prepare().then(() => {
     createServer((req, res) => {
@@ -35,7 +34,7 @@ app.prepare().then(() => {
                 url: 'https://api.twitter.com/oauth/request_token',
                 method: 'POST',
                 oauth: {
-                    callback: encodeURI(`http://localhost:3000/${callback_url}`),
+                    callback: encodeURI(`http://localhost:8080/${callback_url}`),
                     consumer_key: consumer_key,
                     consumer_secret: consumer_secret
                 }
@@ -147,9 +146,9 @@ app.prepare().then(() => {
         } else {
             handle(req, res, parsedUrl);
         }
-    }).listen(3000, err => {
+    }).listen(8080, err => {
         if (err) throw err;
-        console.log('> Ready on http://localhost:3000');
+        console.log('> Ready on http://localhost:8080');
     });
 });
 

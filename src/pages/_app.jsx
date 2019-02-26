@@ -3,7 +3,6 @@ import Head from 'next/head';
 // import Link from 'next/link';
 import React from 'react';
 
-// Styles
 import '../styles/index.scss';
 
 export default class extends App {

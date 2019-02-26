@@ -32,6 +32,12 @@ strong {
     }
 }
 
+.input {
+    align-items: center;
+    display: inline-flex;
+    justify-content: flex-start;
+}
+
 .filter {
     display: flex;
 
@@ -58,6 +64,7 @@ strong {
 }
 
 .profile {
+    align-items: center;
     display: flex;
     margin: 16px 0;
 

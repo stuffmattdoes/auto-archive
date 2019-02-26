@@ -1,7 +1,6 @@
-// Libs
 import axios from 'axios';
 import React from 'react';
-import Router from 'next/router';
+// import Router from 'next/router';
 
 // Components
 import { Button, Icon, Text } from '../components/';

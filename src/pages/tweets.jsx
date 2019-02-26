@@ -4,9 +4,7 @@ import classnames from 'classnames';
 import React from 'react';
 
 // Components
-import Button from '../components/button';
-import Loader from '../components/loader';
-import Text from '../components/text';
+import { Button, Loader, Text } from '../components/';
 
 export default class extends React.Component {
     constructor(props) {
@@ -30,7 +28,6 @@ export default class extends React.Component {
     }
     
     componentDidMount() {
-        console.log('componentDidMount');
         const { oauth_token, oauth_token_secret, user_id, screen_name } = this.props.query;
         const options = {
             headers: {
@@ -156,19 +153,25 @@ export default class extends React.Component {
                         <div className='profile'>
                             <div className='profile__photo'><img src={user.profilePhoto} /></div>
                             <div>
-                                <Text.Heading2>@{screen_name}'s tweets:</Text.Heading2>
+                                <Text.Heading3>Tweets from <strong>@{screen_name}</strong>:</Text.Heading3>
                                 <Text.Body2>{user.tweetsCount} total tweets</Text.Body2>
                             </div>
                         </div>
                         <div className='filter'>
-                            <input className='checkbox' defaultChecked={true} id='toggle-all' onChange={this.filter} type='checkbox' /><label htmlFor='toggle-all'>Select all</label>
-                            <input className='checkbox' defaultChecked={true} id='toggle-retweets' onChange={this.filter} type='checkbox' /><label htmlFor='toggle-retweets'>Include retweets</label>
-                            <input className='checkbox' defaultChecked={true} id='toggle-replies' onChange={this.filter} type='checkbox' /><label htmlFor='toggle-replies'>Include replies</label>
+                            <span className='input'>
+                                <input className='checkbox' defaultChecked={true} id='toggle-all' onChange={this.filter} type='checkbox' /><label htmlFor='toggle-all'>Select all</label>
+                            </span>
+                            <span className='input'>
+                                <input className='checkbox' defaultChecked={true} id='toggle-retweets' onChange={this.filter} type='checkbox' /><label htmlFor='toggle-retweets'>Include retweets</label>
+                            </span>
+                            <span className='input'>
+                                <input className='checkbox' defaultChecked={true} id='toggle-replies' onChange={this.filter} type='checkbox' /><label htmlFor='toggle-replies'>Include replies</label>
+                            </span>
                         </div>
                         <ul className='list list--scroll'>
                             {tweets.map(this.renderTweet)}
                         </ul>
-                        <Text.Body1>Download {selected.length} of {tweets.length} most recent tweets</Text.Body1>
+                        <Text.Body1>Selected <strong>{selected.length} of {tweets.length}</strong> most recent tweets</Text.Body1>
                         <Button.Link className='bg-color--twitter-blue' disabled={selected.length === 0} href='#'>Download (.csv)</Button.Link>
                     </>
                 }
